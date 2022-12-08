@@ -1,9 +1,19 @@
 // index.js
+import type { NextPage } from 'next'
+import Head from 'next/head'
 
-const Index = () => {
+
+const Home : NextPage = () => {
   return (
-    <div className='text-green-600'>Index</div>
+    <div>
+    <Head>
+    <title>The Blog.</title>
+        {/* <link rel="icon" href="/favicon.ico" /> */}
+    </Head>
+
+    <div><p className='text-green-600 bg-red-500'>Index</p></div>
+    </div>
   )
 }
 
-export default Index
+export default Home
