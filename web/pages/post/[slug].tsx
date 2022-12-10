@@ -23,8 +23,15 @@ const Slug: NextPage = ({post}: Props) => {
   const router = useRouter()
 
   
-  const onSubmit: SubmitHandler<IFormInput> = async(data) => {
-    console.log(data)
+  const onSubmit: SubmitHandler<IFormInput> = (data) => {
+       fetch('/api/createComment', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      }).then(() => {
+        console.log(data)
+      }).catch((err) =>{
+        console.error(err)
+      })
    }
   const {
      register,
