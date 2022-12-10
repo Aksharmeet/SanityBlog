@@ -6,7 +6,7 @@ import { GetStaticPaths, GetStaticProps } from 'next'
 import { Post } from '../../typings'
 import PortableText from 'react-portable-text'
 import {useForm, SubmitHandler} from "react-hook-form"
-
+import { useState } from 'react'
 
 interface Props {
   post : Post;
@@ -21,7 +21,7 @@ interface IFormInput {
 
 const Slug: NextPage = ({post}: Props) => {
   const router = useRouter()
-
+  const [submitted, setSubmitted] = useState<boolean>(false);
   
   const onSubmit: SubmitHandler<IFormInput> = (data) => {
        fetch('/api/createComment', {
@@ -29,8 +29,10 @@ const Slug: NextPage = ({post}: Props) => {
         body: JSON.stringify(data),
       }).then(() => {
         console.log(data)
+        setSubmitted(true)
       }).catch((err) =>{
         console.error(err)
+        setSubmitted(false)
       })
    }
   const {
@@ -62,46 +64,62 @@ const Slug: NextPage = ({post}: Props) => {
       }
       />
       <hr className='max-w-lg my-5 mx-auto border border-yellow-500'/>
+      {submitted ? (
+        <div  className='flex flex-col p-10 my-10 bg-yellow-500 text-white max-w-2xl mx-auto gap-1'>
+          <h3 className='text-3xl font-bold'>Thank you for submitting your comment</h3>
+          <p>Once it is approved it will appear below</p>
+        </div>
+      ): (<form className='flex flex-col p-10 my-10 max-w-2xl mx-auto mb-10' onSubmit={handleSubmit(onSubmit)}>
+      <h3 className='text-sm text-yellow-500'>Enjoyed this article?</h3>
+      <h4 className='text-3xl font0bolf'>Leave a comment below!</h4>
+      <hr className='py-3 mt-2'/>
+      <input
+      {...register('_id')}
+      type='hidden'
+      name='_id'
+      value={post._id}
+      />
+      
+      <label htmlFor="" className='block mb-5'>
+        <span className='text-gray-700'>Name</span>
+        <input {...register('name', {required: true})}className='shadow border rounded py-2 px-3 form-input mt-1 block w-full ring-yellow-500 outline-none focus:ring-1' placeholder='John Apple' type='text'/>
+      </label>
+      <label htmlFor="" className='block mb-5'>
+        <span className='text-gray-700'>Email</span>
+        <input  {...register('email', {required: true})} className='shadow border rounded py-2 px-3 form-input mt-1 block w-full ring-yellow-500 outline-none focus:ring-1' placeholder='John Apple' type='text'/>
+      </label>
+      <label htmlFor="" className='block mb-5'>
+        <span className='text-gray-700'>Comment</span> 
+        <textarea {...register('comment', {required: true})}  className='shadow border rounded py-2 px-3 form-textarea mt-1 block w-full ring-yellow-500 outline-none focus:ring-1' placeholder='John Apple' rows={8}/>
+      </label>
+     
+     {/* {erros will return when field validation fails} */}
+     <div className='text-red-500 flex flex-col p-5'>
+      {errors.name && (
+        <span>The Name Field is required</span>
+      )}
+       {errors.email && (
+        <span>The Email Field is required</span>
+      )}
+       {errors.comment && (
+        <span>The Comment Field is required</span>
+      )}
 
-      <form className='flex flex-col p-10 my-10 max-w-2xl mx-auto mb-10' onSubmit={handleSubmit(onSubmit)}>
-        <h3 className='text-sm text-yellow-500'>Enjoyed this article?</h3>
-        <h4 className='text-3xl font0bolf'>Leave a comment below!</h4>
-        <hr className='py-3 mt-2'/>
-        <input
-        {...register('_id')}
-        type='hidden'
-        name='_id'
-        value={post._id}
-        />
-        
-        <label htmlFor="" className='block mb-5'>
-          <span className='text-gray-700'>Name</span>
-          <input {...register('name', {required: true})}className='shadow border rounded py-2 px-3 form-input mt-1 block w-full ring-yellow-500 outline-none focus:ring-1' placeholder='John Apple' type='text'/>
-        </label>
-        <label htmlFor="" className='block mb-5'>
-          <span className='text-gray-700'>Email</span>
-          <input  {...register('email', {required: true})} className='shadow border rounded py-2 px-3 form-input mt-1 block w-full ring-yellow-500 outline-none focus:ring-1' placeholder='John Apple' type='text'/>
-        </label>
-        <label htmlFor="" className='block mb-5'>
-          <span className='text-gray-700'>Comment</span> 
-          <textarea {...register('comment', {required: true})}  className='shadow border rounded py-2 px-3 form-textarea mt-1 block w-full ring-yellow-500 outline-none focus:ring-1' placeholder='John Apple' rows={8}/>
-        </label>
-       
-       {/* {erros will return when field validation fails} */}
-       <div className='text-red-500 flex flex-col p-5'>
-        {errors.name && (
-          <span>The Name Field is required</span>
-        )}
-         {errors.email && (
-          <span>The Email Field is required</span>
-        )}
-         {errors.comment && (
-          <span>The Comment Field is required</span>
-        )}
+      <input className='shadow bg-yellow-500 hover:bg-yellow-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounder cursor-pointer' type='submit'/>
+     </div>
+    </form>)}
+     {/* {Comments} */}
 
-        <input className='shadow bg-yellow-500 hover:bg-yellow-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounder cursor-pointer' type='submit'/>
-       </div>
-      </form>
+     <div className='flex flex-col p-10 my-10 max-w-2xl mx-auto shadow-yellow-500 shadow space-y-2'>
+      <h3>Comments</h3>
+      <hr/>
+
+      {post.comments.map((comment) =>(
+        <div key={comment._id} >
+          <p><span className='text-yellow-500'>{comment.name}: </span>{comment.comment}</p>
+        </div>
+        ))}
+     </div>
     </article>
   )
   }
@@ -132,7 +150,7 @@ export const getStaticPaths: GetStaticPaths = async() => {
 }
 
 export const getStaticProps: GetStaticProps = async({params}) => {
-  const query = `*[_type == "post" && slug.current == $slug][0] {
+  const query = `*[_type == "post" && slug.current == 'what-is-a-blog-and-why-should-you-create-one'][0] {
     _id,
     title,
     _createdAt,
@@ -141,6 +159,9 @@ export const getStaticProps: GetStaticProps = async({params}) => {
       name,
       image
     },
+      'comments': *[
+        _type == 'comment' && post._ref == ^._id && approved == true
+      ],
       description,
       mainImage,
       slug,
