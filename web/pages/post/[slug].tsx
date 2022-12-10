@@ -5,12 +5,33 @@ import sanityClient from "../../sanity"
 import { GetStaticPaths, GetStaticProps } from 'next'
 import { Post } from '../../typings'
 import PortableText from 'react-portable-text'
+import {useForm, SubmitHandler} from "react-hook-form"
+
+
 interface Props {
   post : Post;
 }
+
+interface IFormInput {
+  _id: string;
+  name: string;
+  email: string;
+  comment: string;
+}
+
 const Slug: NextPage = ({post}: Props) => {
   const router = useRouter()
 
+  
+  const onSubmit: SubmitHandler<IFormInput> = async(data) => {
+    console.log(data)
+   }
+  const {
+     register,
+     handleSubmit,
+     formState: {errors},
+    } = useForm<IFormInput>()
+ 
   return (
     <article>
       <h1>{router.query.slug}</h1>
@@ -35,23 +56,44 @@ const Slug: NextPage = ({post}: Props) => {
       />
       <hr className='max-w-lg my-5 mx-auto border border-yellow-500'/>
 
-      <form className='flex flex-col p-10 my-10 max-w-2xl mx-auto mb-10'>
+      <form className='flex flex-col p-10 my-10 max-w-2xl mx-auto mb-10' onSubmit={handleSubmit(onSubmit)}>
         <h3 className='text-sm text-yellow-500'>Enjoyed this article?</h3>
         <h4 className='text-3xl font0bolf'>Leave a comment below!</h4>
         <hr className='py-3 mt-2'/>
+        <input
+        {...register('_id')}
+        type='hidden'
+        name='_id'
+        value={post._id}
+        />
+        
         <label htmlFor="" className='block mb-5'>
           <span className='text-gray-700'>Name</span>
-          <input className='shadow border rounded py-2 px-3 form-input mt-1 block w-full ring-yellow-500 outline-none focus:ring-1' placeholder='John Apple' type='text'/>
+          <input {...register('name', {required: true})}className='shadow border rounded py-2 px-3 form-input mt-1 block w-full ring-yellow-500 outline-none focus:ring-1' placeholder='John Apple' type='text'/>
         </label>
         <label htmlFor="" className='block mb-5'>
           <span className='text-gray-700'>Email</span>
-          <input className='shadow border rounded py-2 px-3 form-input mt-1 block w-full ring-yellow-500 outline-none focus:ring-1' placeholder='John Apple' type='text'/>
+          <input  {...register('email', {required: true})} className='shadow border rounded py-2 px-3 form-input mt-1 block w-full ring-yellow-500 outline-none focus:ring-1' placeholder='John Apple' type='text'/>
         </label>
         <label htmlFor="" className='block mb-5'>
           <span className='text-gray-700'>Comment</span> 
-          <textarea className='shadow border rounded py-2 px-3 form-textarea mt-1 block w-full ring-yellow-500 outline-none focus:ring-1' placeholder='John Apple' rows={8}/>
+          <textarea {...register('comment', {required: true})}  className='shadow border rounded py-2 px-3 form-textarea mt-1 block w-full ring-yellow-500 outline-none focus:ring-1' placeholder='John Apple' rows={8}/>
         </label>
        
+       {/* {erros will return when field validation fails} */}
+       <div className='text-red-500 flex flex-col p-5'>
+        {errors.name && (
+          <span>The Name Field is required</span>
+        )}
+         {errors.email && (
+          <span>The Email Field is required</span>
+        )}
+         {errors.comment && (
+          <span>The Comment Field is required</span>
+        )}
+
+        <input className='shadow bg-yellow-500 hover:bg-yellow-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounder cursor-pointer' type='submit'/>
+       </div>
       </form>
     </article>
   )
