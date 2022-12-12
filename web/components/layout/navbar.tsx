@@ -33,22 +33,28 @@ function Navbar() {
       
 
         {/* mobile */}
-        <ul className={`absolute left-0 right-0 top-0 pt-10 z-50 min-h-screen bg-white lg:hidden  ${!toggle ? ' duration-300 transition-opacity opacity-0 pointer-events-none ': 'duration-500 transition-opacity'}`}>
-            <div className="border-b border-stone-200 text-stone-500 pb-9 pl-[95vw] lg:hidden" onClick={() => setToggle(prev => !prev)}>
+        <ul className={`absolute left-0 right-0 top-0 pt-10 z-50 min-h-screen bg-white lg:hidden ${!toggle ? ' duration-300 transition-opacity opacity-0 pointer-events-none ': 'duration-500 transition-opacity'} overflow-hidden`}>
+            <div className="border-b border-stone-200 text-stone-500 pb-9 pl-[90vw] lg:hidden" onClick={() => setToggle(prev => !prev)}>
                 <Close/>
             </div>
-            <div  className="p-9 border-b border-stone-200 text-stone-500 flex flex-row items-center gap-2">
-                <SubdirectoryRightArrow/>
-                <Link href='/' onClick={() => setToggle(prev => !prev)}><li className=' text-3xl font-normal text tracking-wider'>Home</li></Link>
-            </div>
-            <div className="p-9 border-b border-stone-200 text-stone-500 flex flex-row items-center gap-2">
-                <SubdirectoryRightArrow/>
-                <Link href="/" onClick={() => setToggle(prev => !prev)}><li className='text-3xl font-normal text tracking-wider'>Blog</li></Link>
-            </div>
-            <div className="p-9 border-b border-stone-200 text-stone-500 flex flex-row items-center gap-2">
-                <SubdirectoryRightArrow/>
-                <Link href="/" onClick={() => setToggle(prev => !prev)}><li className='text-3xl font-normal text tracking-wider'>About</li></Link>
-            </div>
+            <Link href='/' onClick={() => setToggle(prev => !prev)}>
+                <div  className="p-9 border-b border-stone-200 text-stone-500 flex flex-row items-center gap-2">
+                    <SubdirectoryRightArrow/>
+                    <li className=' text-3xl font-normal text tracking-wider'>Home</li>
+                </div>
+            </Link>
+            <Link href='/' onClick={() => setToggle(prev => !prev)}>
+                <div  className="p-9 border-b border-stone-200 text-stone-500 flex flex-row items-center gap-2">
+                    <SubdirectoryRightArrow/>
+                    <li className=' text-3xl font-normal text tracking-wider'>Blog</li>
+                </div>
+            </Link>
+            <Link href='/' onClick={() => setToggle(prev => !prev)}>
+                <div  className="p-9 border-b border-stone-200 text-stone-500 flex flex-row items-center gap-2">
+                    <SubdirectoryRightArrow/>
+                    <li className=' text-3xl font-normal text tracking-wider'>About</li>
+                </div>
+            </Link>
         </ul>
         
 
