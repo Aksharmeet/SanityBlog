@@ -1,5 +1,5 @@
 import Head from "next/head"
-import Navbar from "./components/layout/navbar"
+import Navbar from "../components/layout/navbar"
 
 
 function Index() {
