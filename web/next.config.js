@@ -2,11 +2,11 @@
 module.exports = {
 	reactStrictMode: true,
 	images: {
-		// remotePatterns: [
-		// 	{
-		// 		protocol: 'https',
-		// 		hostname: 'links.papareact.com',
-		// 	},
-		// ],
+		remotePatterns: [
+			{
+				protocol: 'https',
+				hostname: 'cdn.sanity.io',
+			},
+		],
 	},
 }

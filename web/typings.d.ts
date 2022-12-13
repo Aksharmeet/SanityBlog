@@ -6,4 +6,5 @@ export interface Post  {
     description: string,
     mainImage:{_type:string, asset: {_ref:string, _type:string}},
     categories: [string] 
+    _createdAt: string,
   }
