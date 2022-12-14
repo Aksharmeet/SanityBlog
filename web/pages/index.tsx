@@ -3,7 +3,7 @@ import Head from 'next/head'
 import sanityClient from '../sanity'
 import { urlFor } from '../sanity'
 import Image from 'next/image'
-
+import Link from 'next/link'
 import { GetServerSideProps } from 'next'
 import { NextPage } from 'next'
 
@@ -12,14 +12,14 @@ import { Post } from '../typings'
 
 // func
 import { ConvertToDate } from '../func'
+import TheBlogLogo from "../components/svg's/theBlogLogo"
+
 interface Props {
 	posts: Post[]
 	trendingPosts: Post[]
 }
 
 const Index: NextPage = ({ posts, trendingPosts }: Props) => {
-	console.log(trendingPosts)
-
 	return (
 		<div className='font-bold font-Poppins'>
 			<Head>
@@ -27,26 +27,47 @@ const Index: NextPage = ({ posts, trendingPosts }: Props) => {
 			</Head>
 			<main>
 				<div>
-					<section className='bg-black px-[5vw] relative top-[-1px] lg:flex lg:gap-5 pb-10'>
-						<div className='md:flex md:gap-5 md:items-center lg:flex-col lg:w-[50%]'>
+					<div className='pb-6 px-5 pt-6 bg-black sm:pt-8 lg:pt-10 border-y border-stone-700 top-[-1px]'>
+						<TheBlogLogo />
+					</div>
+
+					<section className='bg-black px-[5vw] pt-5 relative  lg:flex lg:gap-5 pb-10'>
+						<Link
+							href={`/post/${trendingPosts[0].slug.current}`}
+							key={trendingPosts[0]._id}
+							className='md:flex md:gap-5 md:items-center lg:flex-col lg:w-[50%] group overflow-hidden'
+						>
 							<div>
-								<Image src={urlFor(trendingPosts[0].mainImage.asset._ref).url()!} width='800' height='514' alt='trending' />
+								<Image
+									src={urlFor(trendingPosts[0].mainImage.asset._ref).url()!}
+									width='800'
+									height='514'
+									alt='trending'
+									className='object-cover transition-transform duration-200 ease-in-out group-hover:scale-105'
+								/>
 							</div>
 							<div>
 								<p className='pt-2 pb-1 text-sm font-normal text-stone-600'>{ConvertToDate(trendingPosts[0]._createdAt)}</p>
 								<p className='pb-3 text-2xl font-semibold text-stone-300'>{trendingPosts[0].title}</p>
 								<p className='pb-2 font-normal text-stone-400'>{trendingPosts[0].description}</p>
 							</div>
-						</div>
+						</Link>
+
 						<div className='lg:w-[50%]'>
 							{trendingPosts.length > 0
 								? trendingPosts.map((post, i) => {
 										return (
-											<div key={post._id}>
+											<Link href={`/post/${post.slug.current}`} key={post._id} className='group'>
 												{i > 0 ? (
-													<div className='gap-2 mt-10 sm:flex sm:flex-row-reverse sm:gap-5 lg:flex-row lg:mt-0 lg:mb-5'>
+													<div className='gap-2 mt-10 overflow-hidden sm:flex sm:flex-row-reverse sm:gap-5 lg:flex-row lg:mt-0 lg:mb-5'>
 														<div className='sm:w-[50%]'>
-															<Image src={urlFor(post.mainImage.asset._ref).url()!} width='800' height='514' alt='trending' />
+															<Image
+																src={urlFor(post.mainImage.asset._ref).url()!}
+																width='800'
+																height='514'
+																alt='trending'
+																className='object-cover transition-transform duration-200 ease-in-out group-hover:scale-105'
+															/>
 														</div>
 														<div className='sm:w-[50%]'>
 															<p className='pt-2 pb-1 text-sm font-normal text-stone-600'>{ConvertToDate(post._createdAt)}</p>
@@ -56,7 +77,7 @@ const Index: NextPage = ({ posts, trendingPosts }: Props) => {
 												) : (
 													''
 												)}
-											</div>
+											</Link>
 										)
 								  })
 								: ''}
@@ -68,16 +89,22 @@ const Index: NextPage = ({ posts, trendingPosts }: Props) => {
 							? posts.map((post) => {
 									if (post.categories.find((element) => element === 'Sports')) {
 										return (
-											<div className='mb-7'>
+											<Link href={`/post/${post.slug.current}`} key={post._id} className='mb-7 group'>
 												<div className='xl:h-[400px] h-[200px] overflow-hidden'>
-													<Image src={urlFor(post.mainImage.asset._ref).url()!} width='800' height='514' alt='trending' />
+													<Image
+														src={urlFor(post.mainImage.asset._ref).url()!}
+														width='800'
+														height='514'
+														alt='trending'
+														className='object-cover transition-transform duration-200 ease-in-out group-hover:scale-105'
+													/>
 												</div>
 												<div className=''>
 													<p className='pt-2 pb-1 text-sm font-normal text-stone-600'>{ConvertToDate(post._createdAt)}</p>
 													<p className='pb-3 text-xl font-semibold md:text-2xl lg:text-xl'>{post.title}</p>
 													<p className='font-light'>{post.description}</p>
 												</div>
-											</div>
+											</Link>
 										)
 									}
 							  })
@@ -88,16 +115,22 @@ const Index: NextPage = ({ posts, trendingPosts }: Props) => {
 						{posts.length
 							? posts.map((post) => {
 									return (
-										<div className='mb-7 md:mb-10 md:flex md:flex-row-reverse md:gap-6'>
-											<div className=' md:h-[200px] object-cover md:overflow-clip w-auto md:w-[40%] lg:w-[50%] lg:h-[300px]'>
-												<Image src={urlFor(post.mainImage.asset._ref).url()!} width='800' height='514' alt='trending' />
+										<Link href={`/post/${post.slug.current}`} key={post._id} className='mb-7 md:mb-10 md:flex md:flex-row-reverse md:gap-6 group'>
+											<div className=' md:h-[200px] object-cover overflow-hidden w-auto md:w-[40%] lg:w-[50%] lg:h-[300px]'>
+												<Image
+													src={urlFor(post.mainImage.asset._ref).url()!}
+													width='800'
+													height='514'
+													alt='trending'
+													className='object-cover transition-transform duration-200 ease-in-out group-hover:scale-105'
+												/>
 											</div>
 											<div className='md:w-[60%] lg:w-[50%]'>
 												<p className='pt-2 pb-1 text-sm font-normal text-stone-600'>{ConvertToDate(post._createdAt)}</p>
 												<p className='pb-3 text-2xl font-semibold lg:text-xl text-stone-300'>{post.title}</p>
 												<p className='font-light text-stone-400'>{post.description}</p>
 											</div>
-										</div>
+										</Link>
 									)
 							  })
 							: ''}
